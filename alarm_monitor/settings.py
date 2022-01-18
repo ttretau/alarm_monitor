@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ
 import os
+from django.utils.crypto import get_random_string
 
 root = environ.Path(__file__) - 3  # get root of the project
 env = environ.Env()
@@ -26,7 +27,7 @@ SITE_ROOT = root()
 DEBUG = env.bool('DEBUG', default=False)
 TEMPLATE_DEBUG = DEBUG
 
-SECRET_KEY = env.str('SECRET_KEY', '!g(6u3-n@_f)xa5m6=57du=w0bk%+ca54$o@07x)!c%8yxX*x+@')
+SECRET_KEY = env.str('SECRET_KEY', get_random_string(5))
 
 ALLOWED_HOSTS = []
 
