@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from typing import List
+
 import environ
 import os
 from django.utils.crypto import get_random_string
@@ -29,7 +31,10 @@ TEMPLATE_DEBUG = DEBUG
 
 SECRET_KEY = env.str('SECRET_KEY', get_random_string(5))
 
-ALLOWED_HOSTS = []
+env = environ.Env(
+    ALLOWED_HOSTS=(list, [])
+)
+ALLOWED_HOSTS: List[str] = env('ALLOWED_HOSTS')
 
 INSTALLED_APPS = [
     'django.contrib.auth',
