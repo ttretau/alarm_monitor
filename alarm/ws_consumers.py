@@ -32,3 +32,6 @@ class NotificationWebsocketConsumer(AsyncJsonWebsocketConsumer):
             "alarm",
             self.channel_name,
         )
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard("alarm", self.channel_name)
