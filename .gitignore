@@ -1,3 +1,5 @@
 .idea/
 .debug.http
 .venv/
+venv
+.env

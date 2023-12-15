@@ -4,21 +4,24 @@ RUN addgroup --system app && adduser --system --group app --home /home/app
 
 ENV PORT=8765
 ENV HOME=/home/app
-ENV APP_HOME=/home/app/web
-RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DEBUG False
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install pipenv
+
+COPY Pipfile .
+COPY Pipfile.lock .
 
 COPY . .
 
-RUN chown -R app:app $APP_HOME
+RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
+
+RUN chown -R app:app $HOME
 
 USER app
 
-CMD daphne -b 0.0.0.0 -p $PORT alarm_monitor.asgi:application
+EXPOSE 5000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
