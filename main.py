@@ -30,23 +30,6 @@ class AlarmEvent(BaseModel):
     closed: bool = False
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello"}
-
-
-@app.post("/api/apages/")
-async def handle_apage_event(event: PageEvent,
-                             api_key: str = Security(api_key_header)):
-    logger.info(f"Apage event: {event}")
-
-
-@app.post("/api/alarms/")
-async def handle_apage_event(event: PageEvent,
-                             api_key: str = Security(api_key_header)):
-    logger.info(f"Alarm event: {event}")
-
-
 def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
     if api_key_header in API_KEYS:
         return api_key_header
@@ -54,6 +37,23 @@ def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid or missing API Key",
     )
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello"}
+
+
+@app.post("/api/apages/")
+async def handle_apage_event(event: PageEvent,
+                             api_key: str = Security(get_api_key)):
+    logger.info(f"Apage event: {event}")
+
+
+@app.post("/api/alarms/")
+async def handle_apage_event(event: PageEvent,
+                             api_key: str = Security(get_api_key)):
+    logger.info(f"Alarm event: {event}")
 
 
 if __name__ == "__main__":
