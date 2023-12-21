@@ -12,7 +12,7 @@ from starlette import status
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-API_KEYS = [os.getenv("API_KEY")]
+API_KEYS = [os.getenv("API_KEY").split(',')]
 api_key_header = APIKeyHeader(name="x-api-key")
 
 app = FastAPI()
@@ -24,7 +24,7 @@ class PageEvent(BaseModel):
 
 
 class AlarmEvent(BaseModel):
-    title: str
+    title: str | None
     text: str
     created: datetime | None
     closed: bool = False
