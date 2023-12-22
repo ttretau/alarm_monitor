@@ -19,4 +19,4 @@ RUN chown -R app:app $HOME
 USER app
 
 EXPOSE $PORT
-CMD uvicorn main:app --host 0.0.0.0 --port $PORT
+CMD uvicorn main:app --log-config=log_conf.yaml --host 0.0.0.0 --port $PORT

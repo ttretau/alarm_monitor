@@ -1,17 +1,15 @@
 import os
 import uuid
-from datetime import datetime
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Security
 from fastapi.security import APIKeyHeader
-from pydantic import BaseModel
 import logging
 
 from starlette import status
 from temporalio.client import Client
 
-from models import PageEvent
+from models import PageEvent, AlarmEvent
 from workflows import APageWorkflow
 
 logger = logging.getLogger(__name__)
@@ -27,13 +25,6 @@ async def get_temporal_client():
     return await Client.connect(
         f"{os.getenv('TEMPORAL_HOST', 'localhost')}:7233",
         namespace="alarm")
-
-
-class AlarmEvent(BaseModel):
-    title: str | None
-    text: str
-    created: datetime | None
-    closed: bool = False
 
 
 def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
@@ -62,8 +53,8 @@ async def handle_apage_event(event: PageEvent,
 
 
 @app.post("/api/alarms/")
-async def handle_apage_event(event: PageEvent,
-                             api_key: str = Security(get_api_key)):
+async def handle_mobile_alarm_event(event: AlarmEvent,
+                                    api_key: str = Security(get_api_key)):
     logger.info(f"Alarm event: {event}")
 
 
