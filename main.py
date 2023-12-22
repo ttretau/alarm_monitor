@@ -1,4 +1,5 @@
 import os
+import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -8,19 +9,24 @@ from pydantic import BaseModel
 import logging
 
 from starlette import status
+from temporalio.client import Client
+
+from models import PageEvent
+from workflows import APageWorkflow
 
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-API_KEYS = [os.getenv("API_KEY").split(',')]
+API_KEYS = os.getenv("API_KEYS").split(',')
 api_key_header = APIKeyHeader(name="x-api-key")
 
 app = FastAPI()
 
 
-class PageEvent(BaseModel):
-    keyword: str
-    unit: str
+async def get_temporal_client():
+    return await Client.connect(
+        f"{os.getenv('TEMPORAL_HOST', 'localhost')}:7233",
+        namespace="alarm")
 
 
 class AlarmEvent(BaseModel):
@@ -48,6 +54,11 @@ async def root():
 async def handle_apage_event(event: PageEvent,
                              api_key: str = Security(get_api_key)):
     logger.info(f"Apage event: {event}")
+    client = await get_temporal_client()
+    handle = await client.start_workflow(APageWorkflow.run, event,
+                                         id=str(uuid.uuid4()),
+                                         task_queue="alarm-task-queue")
+    return {"run_id": handle.first_execution_run_id}
 
 
 @app.post("/api/alarms/")
@@ -58,4 +69,5 @@ async def handle_apage_event(event: PageEvent,
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
