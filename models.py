@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PageEvent(BaseModel):
@@ -11,5 +11,5 @@ class PageEvent(BaseModel):
 class AlarmEvent(BaseModel):
     title: str | None
     text: str
-    created: datetime | None
+    created: datetime = Field(default_factory=datetime.now)
     closed: bool = False

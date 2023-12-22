@@ -16,3 +16,13 @@ x-api-key: 2342034fhswefwefwer3424weerr
 }
 
 ###
+
+POST https://alarm.t0n.eu/api/apages/
+Content-Type: application/json
+Accept: application/json
+x-api-key: {{apikey}}
+
+{
+  "keyword": "B3",
+  "unit": "Rulle"
+}
