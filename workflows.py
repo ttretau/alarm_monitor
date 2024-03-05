@@ -5,6 +5,7 @@ from temporalio import workflow
 with workflow.unsafe.imports_passed_through():
     from models import PageEvent
     from activities import handle_page
+    from converter import pydantic_data_converter
 
 
 @workflow.defn

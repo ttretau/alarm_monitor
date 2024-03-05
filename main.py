@@ -9,6 +9,7 @@ import logging
 from starlette import status
 from temporalio.client import Client
 
+from converter import pydantic_data_converter
 from models import PageEvent, AlarmEvent
 from workflows import APageWorkflow
 
@@ -24,7 +25,7 @@ app = FastAPI()
 async def get_temporal_client():
     return await Client.connect(
         f"{os.getenv('TEMPORAL_HOST', 'localhost')}:7233",
-        namespace="alarm")
+        namespace="alarm", data_converter=pydantic_data_converter)
 
 
 def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
