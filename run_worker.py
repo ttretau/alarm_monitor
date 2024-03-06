@@ -5,13 +5,14 @@ from temporalio.client import Client
 from temporalio.worker import Worker
 
 from activities import handle_page
+from converter import pydantic_data_converter
 from workflows import APageWorkflow
 
 
 async def main():
     client = await Client.connect(
         f"{os.getenv('TEMPORAL_HOST', 'localhost')}:7233",
-        namespace="alarm")
+        namespace="alarm", data_converter=pydantic_data_converter)
 
     worker = Worker(
         client,

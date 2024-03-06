@@ -7,8 +7,8 @@ name = "pypi"
 fastapi = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 python-dotenv = "*"
-pydantic = {extras = ["pydantic"], version = "*"}
-temporalio = "*"
+pydantic = "*"
+temporalio = {extras = ["pydantic"], version = "*"}
 
 [dev-packages]
 
