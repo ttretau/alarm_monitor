@@ -61,7 +61,7 @@ async def handle_mobile_alarm_event(event: AlarmEvent,
     logger.info(f"Alarm event: {event}")
     client = await get_temporal_client()
     async for workflow in client.list_workflows(
-            'WorkflowType="APageWorkflow" and ExecutionStatus = "Running"'):
+            'ExecutionStatus = "Running"'):
         print(f"Workflow: {workflow.id}")
 
 
