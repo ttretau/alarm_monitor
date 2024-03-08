@@ -59,6 +59,10 @@ async def handle_apage_event(event: PageEvent,
 async def handle_mobile_alarm_event(event: AlarmEvent,
                                     api_key: str = Security(get_api_key)):
     logger.info(f"Alarm event: {event}")
+    client = await get_temporal_client()
+    async for workflow in client.list_workflows(
+            'WorkflowType="APageWorkflow" and ExecutionStatus == "Running"'):
+        print(f"Workflow: {workflow.id}")
 
 
 if __name__ == "__main__":
