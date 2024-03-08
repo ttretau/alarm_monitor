@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import timedelta
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Security
@@ -49,7 +50,8 @@ async def handle_apage_event(event: PageEvent,
     client = await get_temporal_client()
     handle = await client.start_workflow(APageWorkflow.run, event,
                                          id=str(uuid.uuid4()),
-                                         task_queue="alarm-task-queue")
+                                         task_queue="alarm-task-queue",
+                                         execution_timeout=timedelta(minutes=2))
     return {"run_id": handle.first_execution_run_id}
 
 
