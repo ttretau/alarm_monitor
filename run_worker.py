@@ -4,7 +4,7 @@ import os
 from temporalio.client import Client
 from temporalio.worker import Worker
 
-from activities import handle_page
+from activities import handle_page, handle_alarm
 from converter import pydantic_data_converter
 from workflows import APageWorkflow
 
@@ -19,8 +19,9 @@ async def main():
         task_queue="alarm-task-queue",
         workflows=[APageWorkflow],
         activities=[
-            handle_page
-        ],
+            handle_page,
+            handle_alarm
+        ]
     )
     await worker.run()
 
