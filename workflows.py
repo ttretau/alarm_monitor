@@ -24,14 +24,15 @@ class APageWorkflow:
         )
         while True:
             await workflow.wait_condition(
-                lambda: not self._pending_alarm or self._exit
+                lambda: self._pending_alarm or self._exit
             )
 
-            output = await workflow.execute_activity(
-                handle_alarm,
-                self._pending_alarm,
-                start_to_close_timeout=timedelta(seconds=30),
-            )
+            if self._pending_alarm:
+                output = await workflow.execute_activity(
+                    handle_alarm,
+                    self._pending_alarm,
+                    start_to_close_timeout=timedelta(seconds=30),
+                )
 
             if self._exit:
                 return self._pending_alarm
